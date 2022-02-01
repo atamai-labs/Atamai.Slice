@@ -65,7 +65,7 @@ public class AddModuleInitializer : IIncrementalGenerator
 
     private static bool IsSyntaxTargetForGeneration(SyntaxNode syntaxNode)
     {
-        if (syntaxNode is ClassDeclarationSyntax cds && IsRouter(cds))
+        if (syntaxNode is ClassDeclarationSyntax cds && IsSlice(cds))
         {
             return true;
         }
@@ -73,7 +73,7 @@ public class AddModuleInitializer : IIncrementalGenerator
         return false;
     }
 
-    public static bool IsRouter(ClassDeclarationSyntax source)
+    public static bool IsSlice(ClassDeclarationSyntax source)
     {
         var modifiers = source.Modifiers;
         for (var i = 0; i < modifiers.Count; i++)

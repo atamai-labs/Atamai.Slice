@@ -7,26 +7,26 @@ namespace Atamai.Slice;
 public static class Extensions
 {
     // ReSharper disable once CollectionNeverUpdated.Global
-    private static readonly List<AtamaiSlice> Routers = new();
+    private static readonly List<AtamaiSlice> Slices = new();
 
     public static void UseSlice(this WebApplication endpointRouteBuilder)
     {
         endpointRouteBuilder.UseAuthorizationMiddleware();
 
-        foreach (var router in Routers)
+        foreach (var slice in Slices)
         {
-            router.Register(endpointRouteBuilder);
+            slice.Register(endpointRouteBuilder);
         }
 
-        Routers.Clear();
+        Slices.Clear();
     }
 
     public static void AddSlice(this WebApplicationBuilder builder)
     {
         var serviceCollection = builder.Services;
-        foreach (var router in Routers)
+        foreach (var slice in Slices)
         {
-            router.ConfigureServices(serviceCollection);
+            slice.ConfigureServices(serviceCollection);
         }
     }
 
@@ -34,6 +34,6 @@ public static class Extensions
     // ReSharper disable once UnusedMember.Global
     public static void Add<T>() where T : AtamaiSlice, new()
     {
-        Routers.Add(new T());
+        Slices.Add(new T());
     }
 }
