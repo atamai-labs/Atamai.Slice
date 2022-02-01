@@ -19,3 +19,8 @@ public static class GeneratedAtamaiSliceRegistrations
 This will register all slices on application startup so it's available for the `builder.AddSlice();` and `app.UseSlice();` 
 
 Take a look at [Atamai.Slice.Sample](/Atamai.Slice.Sample) to see it in action.
+
+## Notes / Thoughts
+- What if we have slices and a generated registration in an assembly that isn't the main startup assembly?
+  - Adding something like a "dummy" method `App.AddSlice().AddAssemblyFromType<Type>` that just touches the type should work since it will invoke the `ModuleInitializer` on the `GeneratedAtamaiSliceRegistrations` from that assembly.
+- TBD / More to come
