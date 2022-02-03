@@ -1,4 +1,3 @@
-using Atamai.Slice.Sample;
 using Atamai.Slice;
 using Atamai.Slice.Swagger;
 

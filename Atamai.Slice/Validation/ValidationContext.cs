@@ -54,27 +54,3 @@ public class ValidationContext
         return this;
     }
 }
-
-// public readonly ref struct ValidationTarget<T>
-// {
-//     private readonly ValidationContext? _context;
-//     private readonly T _target;
-//
-//     public ValidationTarget(ValidationContext context, T target)
-//     {
-//         _context = context;
-//         _target = target;
-//     }
-//
-//     public ValidationTarget<T> Custom<T>(T value, Func<T, bool> customValidator, string? message = default,
-//         [CallerArgumentExpression("value")] string path = "")
-//     {
-//         if (!customValidator(value))
-//         {
-//             _context.AddError(path, message ?? "{0} is not valid");
-//             return false;
-//         }
-//
-//         return true;
-//     }
-// }
