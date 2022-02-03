@@ -27,17 +27,18 @@ public static class AuthorizationMiddleware
         });
     }
 
-    private static Task TryAuthorize(StringValues authorizationHeader, HttpContext httpContext, RequestDelegate next)
+    private static async Task TryAuthorize(StringValues authorizationHeader, HttpContext httpContext, RequestDelegate next)
     {
         var authorizer = httpContext.RequestServices.GetRequiredService<IAuthorizer>();
 
-        if (authorizer.Authorize(authorizationHeader[0]))
+        if (await authorizer.Authorize(authorizationHeader[0]))
         {
-            return next(httpContext);
+            await next(httpContext);
         }
-
-        httpContext.Response.Headers.WWWAuthenticate = Scheme;
-        httpContext.Response.StatusCode = 401;
-        return Task.CompletedTask;
+        else
+        {
+            httpContext.Response.Headers.WWWAuthenticate = Scheme;
+            httpContext.Response.StatusCode = 401;
+        }
     }
 }

@@ -2,5 +2,5 @@ namespace Atamai.Slice.Auth;
 
 public interface IAuthorizer
 {
-    bool Authorize(string apiKey);
+    Task<bool> Authorize(string apiKey);
 }

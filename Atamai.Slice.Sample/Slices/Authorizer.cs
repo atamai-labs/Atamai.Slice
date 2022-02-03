@@ -11,8 +11,8 @@ public class Authorizer : IAuthorizer
         _dataBase = dataBase;
     }
 
-    public bool Authorize(string apiKey)
+    public Task<bool> Authorize(string apiKey)
     {
-        return _dataBase.ApiKeyUser.ContainsKey(apiKey);
+        return Task.FromResult(_dataBase.ApiKeyUser.ContainsKey(apiKey));
     }
 }
