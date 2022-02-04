@@ -12,7 +12,13 @@ namespace Atamai.Slice.Generator;
 [Generator]
 public class AddModuleInitializer : IIncrementalGenerator
 {
-    public record struct Slice(string Identifier, string? NameSpace);
+    public record struct Slice(ClassDeclarationSyntax ClassDeclaration, string Identifier, string? NameSpace);
+
+#pragma warning disable RS2008
+    private static readonly DiagnosticDescriptor ClassModifierWarning = new("ATAMAI001", "Modifier",
+        "Only public, non-static, non-abstract implementations of AtamaiSlice is used by generator", "",
+        DiagnosticSeverity.Warning, true);
+#pragma warning restore RS2008
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
@@ -45,9 +51,12 @@ public class AddModuleInitializer : IIncrementalGenerator
     public static void Init() 
     {");
 
-        foreach (var item in items)
+        foreach (var (classDeclaration, identifier, nameSpace) in items)
         {
-            stringBuilder.AppendLine($"        Atamai.Slice.Extensions.Add<{item.NameSpace}.{item.Identifier}>();");
+            if (IsValidForGeneration(context, classDeclaration))
+            {
+                stringBuilder.AppendLine($"        Atamai.Slice.Extensions.Add<{nameSpace}.{identifier}>();");
+            }
         }
 
         stringBuilder.AppendLine(@"    }
@@ -56,39 +65,42 @@ public class AddModuleInitializer : IIncrementalGenerator
         context.AddSource("GeneratedAtamaiSliceRegistrations.g.cs", stringBuilder.ToString());
     }
 
-    private static Slice GetSemanticTargetForGeneration(GeneratorSyntaxContext ctx)
+    private static bool IsValidForGeneration(SourceProductionContext context, ClassDeclarationSyntax classDeclaration)
     {
-        var declarationSyntax = (ClassDeclarationSyntax)ctx.Node;
-        var nameSpace = GetNamespace(declarationSyntax);
-        return new Slice(declarationSyntax.Identifier.ToString(), nameSpace);
-    }
-
-    private static bool IsSyntaxTargetForGeneration(SyntaxNode syntaxNode)
-    {
-        if (syntaxNode is ClassDeclarationSyntax cds && IsSlice(cds))
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public static bool IsSlice(ClassDeclarationSyntax source)
-    {
-        var modifiers = source.Modifiers;
+        var modifiers = classDeclaration.Modifiers;
         for (var i = 0; i < modifiers.Count; i++)
         {
             var kind = modifiers[i].Kind();
             if (kind
                 is SyntaxKind.AbstractKeyword
                 or SyntaxKind.StaticKeyword
-                or SyntaxKind.PrivateKeyword)
+                or SyntaxKind.PrivateKeyword
+                or SyntaxKind.InternalKeyword)
             {
+                var diagnostics = Diagnostic.Create(ClassModifierWarning, classDeclaration.GetLocation());
+                context.ReportDiagnostic(diagnostics);
                 return false;
             }
         }
 
-        if (source.BaseList?.Types is { } baseTypes)
+        return true;
+    }
+
+    private static Slice GetSemanticTargetForGeneration(GeneratorSyntaxContext ctx)
+    {
+        var declarationSyntax = (ClassDeclarationSyntax)ctx.Node;
+        var nameSpace = GetNamespace(declarationSyntax);
+        return new Slice(declarationSyntax, declarationSyntax.Identifier.ToString(), nameSpace);
+    }
+
+    private static bool IsSyntaxTargetForGeneration(SyntaxNode syntaxNode)
+    {
+        return syntaxNode is ClassDeclarationSyntax cds && IsSlice(cds);
+    }
+
+    public static bool IsSlice(ClassDeclarationSyntax classDeclaration)
+    {
+        if (classDeclaration.BaseList?.Types is { } baseTypes)
         {
             for (var i = 0; i < baseTypes.Count; i++)
             {
@@ -105,7 +117,7 @@ public class AddModuleInitializer : IIncrementalGenerator
     {
         // If we don't have a namespace at all we'll return an empty string
         // This accounts for the "default namespace" case
-        string nameSpace = string.Empty;
+        var nameSpace = string.Empty;
 
         // Keep moving "out" of nested classes etc until we get to a namespace
         // or until we run out of parents
