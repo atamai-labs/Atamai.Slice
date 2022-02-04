@@ -7,7 +7,7 @@ public class Create : AtamaiSlice
 {
     public record CreateSession(string Username, string Password) : IValidatable
     {
-        void IValidatable.Validate(in ValidationContext context)
+        void IValidatable.Validate(ValidationContext context)
         {
             context.NotNull(Username)
                 ?.Custom(Username, static username => username.Length > 0, "Must be longer than 0 chars");

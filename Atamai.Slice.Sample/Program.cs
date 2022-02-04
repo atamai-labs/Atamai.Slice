@@ -4,10 +4,7 @@ using Atamai.Slice.Swagger;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSlice();
-});
+builder.Services.AddSwaggerGen(options => options.AddSlice());
 builder.AddSlice();
 
 var app = builder.Build();

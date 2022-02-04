@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+  release:
+    types:
+      - published # a release, pre-release, or draft of a release is published
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  SLICEVERSION: '0.0.1'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.101'
+      - name: Set version
+        if: github.event_name == 'release'
+        run: echo "SLICEVERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+      - name: Build
+        run: dotnet build --configuration Release -p:Version=$SLICEVERSION
+      # - name: Test
+      #   run: dotnet test --no-build --configuration Release
+      - name: Publish release to NuGet
+        if: github.event_name == 'release'
+        run: |
+          dotnet nuget push "**/Atamai.Slice.*$SLICEVERSION.nupkg" --api-key ${{ secrets.NUGET_API_KEY }}
+          dotnet nuget push "**/Atamai.Slice.*$SLICEVERSION.snupkg" --api-key ${{ secrets.NUGET_API_KEY }}
+          

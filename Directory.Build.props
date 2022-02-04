@@ -1,0 +1,20 @@
+<Project>
+    <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <NoWarn>$(NoWarn);CS1591;NU5105</NoWarn>
+        <VersionPrefix>0.0.1</VersionPrefix>
+
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <Authors>Atamai</Authors>
+        <PackageProjectUrl>https://github.com/atamai-labs/Atamai.Slice</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReleaseNotes>https://github.com/atamai-labs/Atamai.Slice/releases/tag/$(Version)</PackageReleaseNotes>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+    </ItemGroup>
+</Project>

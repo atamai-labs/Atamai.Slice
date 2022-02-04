@@ -76,5 +76,5 @@ Take a look at [Atamai.Slice.Sample](Atamai.Slice.Sample) to see it in action.
 - [ ] Validate if this idea is something that should exist
   - [ ] Add tests
   - [ ] Make it pretty
-  - [ ] Package nuget
+  - [x] Package nuget
   - [ ] Compare startup performance with MVC and Carter

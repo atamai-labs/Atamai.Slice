@@ -12,7 +12,7 @@ namespace Atamai.Slice.Generator;
 [Generator]
 public class AddModuleInitializer : IIncrementalGenerator
 {
-    public record struct Slice(ClassDeclarationSyntax ClassDeclaration, string Identifier, string? NameSpace);
+    public record struct Slice(ClassDeclarationSyntax ClassDeclaration, string Identifier, string NameSpace);
 
 #pragma warning disable RS2008
     private static readonly DiagnosticDescriptor ClassModifierWarning = new("ATAMAI001", "Modifier",
@@ -29,8 +29,8 @@ public class AddModuleInitializer : IIncrementalGenerator
         var slices = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => IsSyntaxTargetForGeneration(s),
-                transform: static (ctx, _) => GetSemanticTargetForGeneration(ctx))
-            .Where(static m => m.NameSpace is not null);
+                transform: static (s, _) => TransformToSliceForGeneration(s))
+            .Where(static m => !string.IsNullOrWhiteSpace(m.NameSpace));
 
         // Combine the selected items with the `Compilation`
         IncrementalValueProvider<(Compilation compilation, ImmutableArray<Slice> items)> compilationAndSlices =
@@ -38,10 +38,31 @@ public class AddModuleInitializer : IIncrementalGenerator
 
         // Generate the source
         context.RegisterSourceOutput(compilationAndSlices,
-            static (spc, source) => Execute(source.compilation, source.items, spc));
+            static (spc, source) => Generate(source.compilation, source.items, spc));
     }
 
-    private static void Execute(Compilation compilation, ImmutableArray<Slice> items,
+    private static Slice TransformToSliceForGeneration(GeneratorSyntaxContext ctx)
+    {
+        var declarationSyntax = (ClassDeclarationSyntax)ctx.Node;
+        var nameSpace = GetNamespace(declarationSyntax);
+        return new Slice(declarationSyntax, declarationSyntax.Identifier.ToString(), nameSpace);
+    }
+
+    private static bool IsSyntaxTargetForGeneration(SyntaxNode s)
+    {
+        if (s is ClassDeclarationSyntax { BaseList.Types: var baseTypes })
+        {
+            for (var i = 0; i < baseTypes.Count; i++)
+            {
+                if (baseTypes[i].ToString() == "AtamaiSlice")
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void Generate(Compilation compilation, ImmutableArray<Slice> items,
         SourceProductionContext context)
     {
         var stringBuilder = new StringBuilder();
@@ -84,33 +105,6 @@ public class AddModuleInitializer : IIncrementalGenerator
         }
 
         return true;
-    }
-
-    private static Slice GetSemanticTargetForGeneration(GeneratorSyntaxContext ctx)
-    {
-        var declarationSyntax = (ClassDeclarationSyntax)ctx.Node;
-        var nameSpace = GetNamespace(declarationSyntax);
-        return new Slice(declarationSyntax, declarationSyntax.Identifier.ToString(), nameSpace);
-    }
-
-    private static bool IsSyntaxTargetForGeneration(SyntaxNode syntaxNode)
-    {
-        return syntaxNode is ClassDeclarationSyntax cds && IsSlice(cds);
-    }
-
-    public static bool IsSlice(ClassDeclarationSyntax classDeclaration)
-    {
-        if (classDeclaration.BaseList?.Types is { } baseTypes)
-        {
-            for (var i = 0; i < baseTypes.Count; i++)
-            {
-                var type = baseTypes[i];
-                if (type.ToString() == "AtamaiSlice")
-                    return true;
-            }
-        }
-
-        return false;
     }
 
     static string GetNamespace(SyntaxNode? potentialNamespaceParent)
