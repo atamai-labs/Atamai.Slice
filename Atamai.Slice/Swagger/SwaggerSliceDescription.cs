@@ -2,7 +2,7 @@ using Microsoft.OpenApi.Models;
 
 namespace Atamai.Slice.Swagger;
 
-public record SwaggerRouteDescription(string Summary, string? Description = default)
+public record SwaggerSliceDescription(string Summary, string? Description = default)
 {
     public void Apply(OpenApiOperation operation)
     {

@@ -16,7 +16,7 @@ public class CustomOperationFilter : IOperationFilter
                 case AllowAnonymousAttribute:
                     allowAnonymous = true;
                     break;
-                case SwaggerRouteDescription swaggerRouteDescription:
+                case SwaggerSliceDescription swaggerRouteDescription:
                     swaggerRouteDescription.Apply(operation);
                     break;
             }

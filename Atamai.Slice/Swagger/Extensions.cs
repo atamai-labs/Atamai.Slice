@@ -25,7 +25,7 @@ public static class SwaggerExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        builder.Add(endpointBuilder => endpointBuilder.Metadata.Add(new SwaggerRouteDescription(summary, description)));
+        builder.Add(endpointBuilder => endpointBuilder.Metadata.Add(new SwaggerSliceDescription(summary, description)));
 
         return builder;
     }
