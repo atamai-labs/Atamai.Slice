@@ -1,4 +1,4 @@
-using Atamai.Slice.Auth;
+using Atamai.Slice.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;

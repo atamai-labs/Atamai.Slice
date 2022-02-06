@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace Atamai.Slice.Auth;
+namespace Atamai.Slice.Authorization;
 
 public interface IAuthorizer
 {

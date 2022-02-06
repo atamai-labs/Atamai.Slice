@@ -1,5 +1,5 @@
 using Atamai.Slice;
-using Atamai.Slice.Auth;
+using Atamai.Slice.Authorization;
 using Atamai.Slice.Sample;
 using Atamai.Slice.Swagger;
 

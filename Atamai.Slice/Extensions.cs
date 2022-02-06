@@ -1,4 +1,4 @@
-using Atamai.Slice.Auth;
+using Atamai.Slice.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 

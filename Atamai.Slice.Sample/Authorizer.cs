@@ -1,4 +1,4 @@
-using Atamai.Slice.Auth;
+using Atamai.Slice.Authorization;
 
 namespace Atamai.Slice.Sample;
 
