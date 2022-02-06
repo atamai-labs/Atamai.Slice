@@ -3,11 +3,11 @@ using Atamai.Slice.Swagger;
 
 namespace Atamai.Slice.Sample.Slices.Session;
 
-public class Get : AtamaiSlice
+public class Get : IApiSlice
 {
     public record Session(string Username, string Token);
 
-    public override void Register(IEndpointRouteBuilder builder) => builder
+    public static void Register(IEndpointRouteBuilder builder) => builder
         .MapGet("/session", (HttpContext httpContext, DataBase dataBase) =>
         {
             var authorizationToken = httpContext.AuthorizationToken();

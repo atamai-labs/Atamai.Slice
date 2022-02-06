@@ -12,24 +12,21 @@ namespace Atamai.Slice.Generator;
 [Generator]
 public class AddModuleInitializer : IIncrementalGenerator
 {
+    private const string InterfaceName = "IApiSlice";
     public record struct Slice(ClassDeclarationSyntax ClassDeclaration, string Identifier, string NameSpace);
 
 #pragma warning disable RS2008
     private static readonly DiagnosticDescriptor ClassModifierWarning = new("ATAMAI001", "Modifier",
-        "Only public, non-static, non-abstract implementations of AtamaiSlice is used by generator", "",
+        $"Only public, non-static, non-abstract implementations of {InterfaceName} is used by generator", "",
         DiagnosticSeverity.Warning, true);
 #pragma warning restore RS2008
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // #if DEBUG
-        // SpinWait.SpinUntil(() => System.Diagnostics.Debugger.IsAttached);
-        // #endif
-
         var slices = context.SyntaxProvider
             .CreateSyntaxProvider(
-                predicate: static (s, _) => IsSyntaxTargetForGeneration(s),
-                transform: static (s, _) => TransformToSliceForGeneration(s))
+                static (s, _) => IsSyntaxTargetForGeneration(s),
+                static (s, _) => TransformToSliceForGeneration(s))
             .Where(static m => !string.IsNullOrWhiteSpace(m.NameSpace));
 
         // Combine the selected items with the `Compilation`
@@ -54,7 +51,7 @@ public class AddModuleInitializer : IIncrementalGenerator
         {
             for (var i = 0; i < baseTypes.Count; i++)
             {
-                if (baseTypes[i].ToString() == "AtamaiSlice")
+                if (baseTypes[i].ToString() == InterfaceName)
                     return true;
             }
         }
@@ -66,7 +63,7 @@ public class AddModuleInitializer : IIncrementalGenerator
         SourceProductionContext context)
     {
         var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine(@"public static class GeneratedAtamaiSliceRegistrations 
+        stringBuilder.AppendLine(@"public static class GeneratedApiSliceRegistrations 
 { 
     [System.Runtime.CompilerServices.ModuleInitializer]
     public static void Init() 

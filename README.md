@@ -12,7 +12,7 @@ using Atamai.Slice.Validation;
 
 namespace Atamai.Slice.Sample.Slices.Session;
 
-public class Create : AtamaiSlice
+public class Create : IApiSlice
 {
     public record CreateSession(string Username, string Password) : IValidatable
     {
@@ -50,9 +50,9 @@ public class Create : AtamaiSlice
 }
 ```
 
-[Atamai.Slice.Generator](Atamai.Slice.Generator) will find all implementations of `AtamaiSlice` and generate something like the following:
+[Atamai.Slice.Generator](Atamai.Slice.Generator) will find all implementations of `IApiSlice` and generate something like the following:
 ```c#
-public static class GeneratedAtamaiSliceRegistrations 
+public static class GeneratedApiSliceRegistrations 
 { 
     [System.Runtime.CompilerServices.ModuleInitializer]
     public static void Init() 
@@ -70,7 +70,7 @@ Take a look at [Atamai.Slice.Sample](Atamai.Slice.Sample) to see it in action.
 
 ## Notes / Thoughts
 - What if we have slices and a generated registration in an assembly that isn't the main startup assembly?
-  - Adding something like a "dummy" method `App.AddSlice().AddAssemblyFromType<Type>` that just touches the type should work since it will invoke the `ModuleInitializer` on the `GeneratedAtamaiSliceRegistrations` from that assembly.
+  - Adding something like a "dummy" method `App.AddSlice().AddAssemblyFromType<Type>` that just touches the type should work since it will invoke the `ModuleInitializer` on the `GeneratedApiSliceRegistrations` from that assembly.
 
 ## Todo
 - [ ] Validate if this idea is something that should exist

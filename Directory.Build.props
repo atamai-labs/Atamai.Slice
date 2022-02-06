@@ -6,6 +6,7 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <NoWarn>$(NoWarn);CS1591;NU5105</NoWarn>
         <VersionPrefix>0.0.1</VersionPrefix>
+        <EnablePreviewFeatures>True</EnablePreviewFeatures>
 
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <Authors>Atamai</Authors>

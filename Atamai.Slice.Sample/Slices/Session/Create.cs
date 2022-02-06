@@ -3,7 +3,7 @@ using Atamai.Slice.Validation;
 
 namespace Atamai.Slice.Sample.Slices.Session;
 
-public class Create : AtamaiSlice
+public class Create : IApiSlice
 {
     public record CreateSession(string Username, string Password) : IValidatable
     {
@@ -16,15 +16,14 @@ public class Create : AtamaiSlice
         }
     }
 
-    public override void Register(IEndpointRouteBuilder builder) => builder
+    public static void Register(IEndpointRouteBuilder builder) => builder
         .MapPost("/session", (CreateSession request, DataBase dataBase) =>
         {
             if (request.Validate() is { } problem)
                 return problem;
 
             if (dataBase.Users.TryGetValue(request.Username, out var hashedPassword) &&
-                PasswordHasher.Compare(hashedPassword, request.Password))
-            {
+                PasswordHasher.Compare(hashedPassword, request.Password))            {
                 var apiKey = Guid.NewGuid().ToString("N");
                 dataBase.ApiKeyUser[apiKey] = request.Username;
 

@@ -1,11 +1,12 @@
 using Atamai.Slice.Auth;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 
 namespace Atamai.Slice;
 
 public static class Extensions
 {
-    private static readonly List<AtamaiSlice> Slices = new();
+    private static readonly List<Action<IEndpointRouteBuilder>> Slices = new();
 
     public static void UseSlice(this WebApplication endpointRouteBuilder)
     {
@@ -13,23 +14,14 @@ public static class Extensions
 
         foreach (var slice in Slices)
         {
-            slice.Register(endpointRouteBuilder);
+            slice(endpointRouteBuilder);
         }
 
         Slices.Clear();
     }
 
-    public static void AddSlice(this WebApplicationBuilder builder)
+    public static void Add<T>() where T : IApiSlice, new()
     {
-        var serviceCollection = builder.Services;
-        foreach (var slice in Slices)
-        {
-            slice.ConfigureServices(serviceCollection);
-        }
-    }
-
-    public static void Add<T>() where T : AtamaiSlice, new()
-    {
-        Slices.Add(new T());
+        Slices.Add(static builder => T.Register(builder));
     }
 }

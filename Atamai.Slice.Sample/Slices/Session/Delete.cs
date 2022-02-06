@@ -3,9 +3,9 @@ using Atamai.Slice.Swagger;
 
 namespace Atamai.Slice.Sample.Slices.Session;
 
-public class Delete : AtamaiSlice
+public class Delete : IApiSlice
 {
-    public override void Register(IEndpointRouteBuilder builder) => builder
+    public static void Register(IEndpointRouteBuilder builder) => builder
         .MapDelete("/session", (HttpContext httpContext, DataBase dataBase) =>
         {
             var authorizationToken = httpContext.AuthorizationToken();
