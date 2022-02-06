@@ -1,6 +1,6 @@
 using Atamai.Slice.Auth;
 
-namespace Atamai.Slice.Sample.Slices;
+namespace Atamai.Slice.Sample;
 
 public class Authorizer : IAuthorizer
 {
@@ -11,8 +11,9 @@ public class Authorizer : IAuthorizer
         _dataBase = dataBase;
     }
 
-    public Task<bool> Authorize(string apiKey)
+    public Task<bool> Authorize(HttpContext httpContext)
     {
+        var apiKey = httpContext.Request.Headers.Authorization;
         return Task.FromResult(_dataBase.ApiKeyUser.ContainsKey(apiKey));
     }
 }

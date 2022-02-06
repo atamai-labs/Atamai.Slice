@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Http;
+
 namespace Atamai.Slice.Auth;
 
 public interface IAuthorizer
 {
-    Task<bool> Authorize(string apiKey);
+    Task<bool> Authorize(HttpContext httpContext);
 }
