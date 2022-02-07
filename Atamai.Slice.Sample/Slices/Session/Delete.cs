@@ -1,4 +1,3 @@
-using Atamai.Slice.Authorization;
 using Atamai.Slice.Swagger;
 
 namespace Atamai.Slice.Sample.Slices.Session;

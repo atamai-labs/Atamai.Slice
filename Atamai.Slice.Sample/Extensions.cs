@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Http;
-
-namespace Atamai.Slice.Authorization;
+namespace Atamai.Slice.Sample;
 
 public static class Extensions
 {
