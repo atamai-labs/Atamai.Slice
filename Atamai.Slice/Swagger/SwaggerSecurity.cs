@@ -1,4 +1,4 @@
-using Atamai.Slice.Authorization;
+using Atamai.Slice.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -9,9 +9,9 @@ public static class SwaggerSecurity
 {
     public static void Apply(SwaggerGenOptions options)
     {
-        options.AddSecurityDefinition(AuthorizationMiddleware.Scheme, new OpenApiSecurityScheme
+        options.AddSecurityDefinition(AuthenticationMiddleware.Scheme, new OpenApiSecurityScheme
         {
-            Description = nameof(AuthorizationMiddleware),
+            Description = nameof(AuthenticationMiddleware),
             Name = "Authorization",
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.ApiKey,
@@ -34,7 +34,7 @@ public static class SwaggerSecurity
                         Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
-                            Id = AuthorizationMiddleware.Scheme
+                            Id = AuthenticationMiddleware.Scheme
                         },
                         Scheme = "basic",
                         Name = "Authorization",

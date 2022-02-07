@@ -7,12 +7,12 @@ public class Get : IApiSlice
     public record Session(string Username, string Token);
 
     public static void Register(IEndpointRouteBuilder builder) => builder
-        .MapGet("/session", (HttpContext httpContext, DataBase dataBase) =>
+        .MapGet("/session", (Authenticator authenticator, DataBase dataBase) =>
         {
-            var authorizationToken = httpContext.AuthorizationToken();
+            var token = authenticator.Token;
 
-            if (dataBase.TokenUser.TryGetValue(authorizationToken, out var user))
-                return Results.Ok(new Session(user, authorizationToken));
+            if (dataBase.TokenUser.TryGetValue(token, out var user))
+                return Results.Ok(new Session(user, token));
 
             return Results.NotFound();
         })

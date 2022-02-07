@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Atamai.Slice.Authorization;
+namespace Atamai.Slice.Authentication;
 
-internal static class AuthorizationMiddleware
+internal static class AuthenticationMiddleware
 {
     public const string Scheme = "token";
 
-    public static void UseAuthorizationMiddleware(this WebApplication app)
+    public static void UseAuthenticationMiddleware(this WebApplication app)
     {
         app.Use((context, next) =>
         {
@@ -17,7 +17,7 @@ internal static class AuthorizationMiddleware
                 return next(context);
 
             if(context.Request.Headers.Authorization.Count > 0)
-                return TryAuthorize(context, next);
+                return Authenticate(context, next);
 
             context.Response.Headers.WWWAuthenticate = Scheme;
             context.Response.StatusCode = 401;
@@ -25,11 +25,11 @@ internal static class AuthorizationMiddleware
         });
     }
 
-    private static async Task TryAuthorize(HttpContext httpContext, RequestDelegate next)
+    private static async Task Authenticate(HttpContext httpContext, RequestDelegate next)
     {
-        var authorizer = httpContext.RequestServices.GetRequiredService<IAuthorizer>();
+        var authenticator = httpContext.RequestServices.GetRequiredService<IAuthenticator>();
 
-        if (await authorizer.Authorize(httpContext))
+        if (await authenticator.Authenticate(httpContext))
         {
             await next(httpContext);
         }

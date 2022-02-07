@@ -1,4 +1,4 @@
-using Atamai.Slice.Authorization;
+using Atamai.Slice.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
@@ -10,7 +10,7 @@ public static class Extensions
 
     public static void UseSlice(this WebApplication endpointRouteBuilder)
     {
-        endpointRouteBuilder.UseAuthorizationMiddleware();
+        endpointRouteBuilder.UseAuthenticationMiddleware();
 
         foreach (var slice in Slices)
         {

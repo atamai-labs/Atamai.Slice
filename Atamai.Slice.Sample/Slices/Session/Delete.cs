@@ -5,10 +5,10 @@ namespace Atamai.Slice.Sample.Slices.Session;
 public class Delete : IApiSlice
 {
     public static void Register(IEndpointRouteBuilder builder) => builder
-        .MapDelete("/session", (HttpContext httpContext, DataBase dataBase) =>
+        .MapDelete("/session", (Authenticator authenticator, DataBase dataBase) =>
         {
-            var authorizationToken = httpContext.AuthorizationToken();
-            if (dataBase.TokenUser.TryRemove(authorizationToken, out _))
+            var token = authenticator.Token;
+            if (dataBase.TokenUser.TryRemove(token, out _))
                 return Results.Ok();
 
             return Results.Unauthorized();
