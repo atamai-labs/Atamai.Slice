@@ -8,7 +8,7 @@ public class Delete : IApiSlice
         .MapDelete("/session", (HttpContext httpContext, DataBase dataBase) =>
         {
             var authorizationToken = httpContext.AuthorizationToken();
-            if (dataBase.ApiKeyUser.TryRemove(authorizationToken, out _))
+            if (dataBase.TokenUser.TryRemove(authorizationToken, out _))
                 return Results.Ok();
 
             return Results.Unauthorized();

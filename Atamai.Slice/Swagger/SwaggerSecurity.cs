@@ -9,7 +9,7 @@ public static class SwaggerSecurity
 {
     public static void Apply(SwaggerGenOptions options)
     {
-        options.AddSecurityDefinition("api-key", new OpenApiSecurityScheme
+        options.AddSecurityDefinition(AuthorizationMiddleware.Scheme, new OpenApiSecurityScheme
         {
             Description = nameof(AuthorizationMiddleware),
             Name = "Authorization",
@@ -34,7 +34,7 @@ public static class SwaggerSecurity
                         Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
-                            Id = "api-key"
+                            Id = AuthorizationMiddleware.Scheme
                         },
                         Scheme = "basic",
                         Name = "Authorization",

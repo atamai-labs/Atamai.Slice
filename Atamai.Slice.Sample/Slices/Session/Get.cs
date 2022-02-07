@@ -11,7 +11,7 @@ public class Get : IApiSlice
         {
             var authorizationToken = httpContext.AuthorizationToken();
 
-            if (dataBase.ApiKeyUser.TryGetValue(authorizationToken, out var user))
+            if (dataBase.TokenUser.TryGetValue(authorizationToken, out var user))
                 return Results.Ok(new Session(user, authorizationToken));
 
             return Results.NotFound();

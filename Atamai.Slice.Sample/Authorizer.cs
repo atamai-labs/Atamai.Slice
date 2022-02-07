@@ -13,7 +13,7 @@ public class Authorizer : IAuthorizer
 
     public Task<bool> Authorize(HttpContext httpContext)
     {
-        var apiKey = httpContext.Request.Headers.Authorization;
-        return Task.FromResult(_dataBase.ApiKeyUser.ContainsKey(apiKey));
+        var token = httpContext.Request.Headers.Authorization;
+        return Task.FromResult(_dataBase.TokenUser.ContainsKey(token));
     }
 }

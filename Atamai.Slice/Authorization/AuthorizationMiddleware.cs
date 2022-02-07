@@ -7,7 +7,7 @@ namespace Atamai.Slice.Authorization;
 
 internal static class AuthorizationMiddleware
 {
-    public const string Scheme = "api-key";
+    public const string Scheme = "token";
 
     public static void UseAuthorizationMiddleware(this WebApplication app)
     {
