@@ -15,7 +15,7 @@
         <PackageReleaseNotes>https://github.com/atamai-labs/Atamai.Slice/releases/tag/$(Version)</PackageReleaseNotes>
     </PropertyGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="$(GeneratePackageOnBuild)">
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
     </ItemGroup>
 </Project>
