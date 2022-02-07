@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Atamai.Slice.Authorization;
 
-public static class AuthorizationMiddleware
+internal static class AuthorizationMiddleware
 {
     public const string Scheme = "api-key";
 
