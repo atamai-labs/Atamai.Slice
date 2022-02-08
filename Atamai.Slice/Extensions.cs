@@ -20,7 +20,7 @@ public static class Extensions
         Slices.Clear();
     }
 
-    public static void Add<T>() where T : IApiSlice, new()
+    public static void Add<T>() where T : IApiSlice
     {
         Slices.Add(static builder => T.Register(builder));
     }
