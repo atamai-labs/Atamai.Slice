@@ -25,6 +25,5 @@ public class Create : IApiSlice
               [CommonMark](https://spec.commonmark.org/) syntax MAY be used for rich text representation.")
         .Produces<string>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized)
-        .ProducesValidationProblem()
         .AllowAnonymous();
 }
