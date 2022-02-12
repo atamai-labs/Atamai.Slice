@@ -3,12 +3,13 @@
 Proof-of-concept solution for slicing minimal-api and using source generator to resolve the slices 
 without runtime reflection or manual registrations.
 
-Atamai.Slice also contains minimal auth just to play with the auth of a sliced api.
+Atamai.Slice also contains minimal auth that requires opt-out of just to play with the auth of a sliced api.
+
+We use [Static abstract members in interfaces](https://docs.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/static-abstract-interface-methods) so .NET6 and `<EnablePreviewFeatures>True</EnablePreviewFeatures>` in csproj is required.
 
 Example slice:
 ```c#
 using Atamai.Slice.Swagger;
-using Atamai.Slice.Validation;
 
 namespace Atamai.Slice.Sample.Slices.Session;
 
@@ -33,7 +34,6 @@ public class Create : IApiSlice
         .WithDescription("Create Session")
         .Produces<string>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized)
-        .ProducesValidationProblem()
         .AllowAnonymous();
 }
 ```
