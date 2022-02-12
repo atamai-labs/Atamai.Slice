@@ -1,20 +1,21 @@
-using Atamai.Slice.Auth;
 using Atamai.Slice.Swagger;
 
 namespace Atamai.Slice.Sample.Slices.Session;
 
-public class Delete : AtamaiSlice
+public class Delete : IApiSlice
 {
-    public override void Register(IEndpointRouteBuilder builder) => builder
-        .MapDelete("/session", (HttpContext httpContext, DataBase dataBase) =>
+    public static void Register(IEndpointRouteBuilder builder) => builder
+        .MapDelete("/session", (Authenticator authenticator, DataBase dataBase) =>
         {
-            var authorizationToken = httpContext.AuthorizationToken();
-            if (dataBase.ApiKeyUser.TryRemove(authorizationToken, out _))
+            var token = authenticator.Token;
+            if (dataBase.TokenUser.TryRemove(token, out _))
                 return Results.Ok();
 
             return Results.Unauthorized();
         })
-        .WithDescription("Delete session")
+        .WithDescription("Delete session",
+            @"A verbose explanation of the operation behavior.\
+              [CommonMark](https://spec.commonmark.org/) syntax MAY be used for rich text representation.")
         .Produces(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized);
 }

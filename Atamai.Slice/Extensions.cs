@@ -1,35 +1,16 @@
-using Atamai.Slice.Auth;
+using Atamai.Slice.Authentication;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 
 namespace Atamai.Slice;
 
 public static class Extensions
 {
-    private static readonly List<AtamaiSlice> Slices = new();
+    public static event Action<IEndpointRouteBuilder>? OnLoad;
 
-    public static void UseSlice(this WebApplication endpointRouteBuilder)
+    public static void UseSlice(this WebApplication builder)
     {
-        endpointRouteBuilder.UseAuthorizationMiddleware();
-
-        foreach (var slice in Slices)
-        {
-            slice.Register(endpointRouteBuilder);
-        }
-
-        Slices.Clear();
-    }
-
-    public static void AddSlice(this WebApplicationBuilder builder)
-    {
-        var serviceCollection = builder.Services;
-        foreach (var slice in Slices)
-        {
-            slice.ConfigureServices(serviceCollection);
-        }
-    }
-
-    public static void Add<T>() where T : AtamaiSlice, new()
-    {
-        Slices.Add(new T());
+        builder.UseAuthenticationMiddleware();
+        OnLoad?.Invoke(builder);
     }
 }

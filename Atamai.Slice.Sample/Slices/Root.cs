@@ -1,21 +1,14 @@
-using Atamai.Slice.Auth;
 using Atamai.Slice.Swagger;
 
 namespace Atamai.Slice.Sample.Slices;
 
-/// <summary>
-/// Root slice where we configure general services/routes
-/// </summary>
-public class Root : AtamaiSlice
+public class Root : IApiSlice
 {
-    public override void Register(IEndpointRouteBuilder builder) => builder
+    public static void Register(IEndpointRouteBuilder builder) => builder
         .MapGet("/", () => "Hello")
-        .WithDescription("Be nice")
+        .WithDescription("Be nice",
+            @"A verbose explanation of the operation behavior.\
+              [CommonMark](https://spec.commonmark.org/) syntax MAY be used for rich text representation.")
+        .Produces<string>(StatusCodes.Status200OK)
         .AllowAnonymous();
-
-    public override void ConfigureServices(IServiceCollection services)
-    {
-        services.AddSingleton<DataBase>();
-        services.AddScoped<IAuthorizer, Authorizer>();
-    }
 }

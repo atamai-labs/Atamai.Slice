@@ -1,23 +1,24 @@
-using Atamai.Slice.Auth;
 using Atamai.Slice.Swagger;
 
 namespace Atamai.Slice.Sample.Slices.Session;
 
-public class Get : AtamaiSlice
+public class Get : IApiSlice
 {
     public record Session(string Username, string Token);
 
-    public override void Register(IEndpointRouteBuilder builder) => builder
-        .MapGet("/session", (HttpContext httpContext, DataBase dataBase) =>
+    public static void Register(IEndpointRouteBuilder builder) => builder
+        .MapGet("/session", (Authenticator authenticator, DataBase dataBase) =>
         {
-            var authorizationToken = httpContext.AuthorizationToken();
+            var token = authenticator.Token;
 
-            if (dataBase.ApiKeyUser.TryGetValue(authorizationToken, out var user))
-                return Results.Ok(new Session(user, authorizationToken));
+            if (dataBase.TokenUser.TryGetValue(token, out var user))
+                return Results.Ok(new Session(user, token));
 
             return Results.NotFound();
         })
-        .WithDescription("Secure secret information")
+        .WithDescription("Secure secret information",
+            @"A verbose explanation of the operation behavior.\
+              [CommonMark](https://spec.commonmark.org/) syntax MAY be used for rich text representation.")
         .Produces<Session>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound);
 }

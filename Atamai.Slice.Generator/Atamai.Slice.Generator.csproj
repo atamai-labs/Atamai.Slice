@@ -4,10 +4,9 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
         <IncludeBuildOutput>false</IncludeBuildOutput>
-        <LangVersion>Latest</LangVersion>
         <NoWarn>$(NoWarn);NU5128</NoWarn>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
     <!-- The following libraries include the source generator interfaces and types we need -->
     <ItemGroup>

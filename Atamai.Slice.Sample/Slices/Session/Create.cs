@@ -1,39 +1,28 @@
 using Atamai.Slice.Swagger;
-using Atamai.Slice.Validation;
 
 namespace Atamai.Slice.Sample.Slices.Session;
 
-public class Create : AtamaiSlice
+public class Create : IApiSlice
 {
-    public record CreateSession(string Username, string Password) : IValidatable
-    {
-        void IValidatable.Validate(in ValidationContext context)
-        {
-            context.NotNull(Username)
-                ?.Custom(Username, static username => username.Length > 0, "Must be longer than 0 chars");
+    public record CreateSession(string Username, string Password);
 
-            context.Custom(Password, static password => !string.IsNullOrWhiteSpace(password));
-        }
-    }
-
-    public override void Register(IEndpointRouteBuilder builder) => builder
+    public static void Register(IEndpointRouteBuilder builder) => builder
         .MapPost("/session", (CreateSession request, DataBase dataBase) =>
         {
-            if (request.Validate() is { } problem)
-                return problem;
-
             if (dataBase.Users.TryGetValue(request.Username, out var hashedPassword) &&
                 PasswordHasher.Compare(hashedPassword, request.Password))
             {
-                var apiKey = Guid.NewGuid().ToString("N");
-                dataBase.ApiKeyUser[apiKey] = request.Username;
+                var token = Guid.NewGuid().ToString("N");
+                dataBase.TokenUser[token] = request.Username;
 
-                return Results.Ok(apiKey);
+                return Results.Ok(token);
             }
 
             return Results.Unauthorized();
         })
-        .WithDescription("Create Session")
+        .WithDescription("Create Session",
+            @"A verbose explanation of the operation behavior.\
+              [CommonMark](https://spec.commonmark.org/) syntax MAY be used for rich text representation.")
         .Produces<string>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized)
         .ProducesValidationProblem()

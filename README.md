@@ -3,7 +3,7 @@
 Proof-of-concept solution for slicing minimal-api and using source generator to resolve the slices 
 without runtime reflection or manual registrations.
 
-Atamai.Slice also contains dummy validation and minimal auth just to play with the structure of a sliced api.
+Atamai.Slice also contains minimal auth just to play with the auth of a sliced api.
 
 Example slice:
 ```c#
@@ -12,25 +12,13 @@ using Atamai.Slice.Validation;
 
 namespace Atamai.Slice.Sample.Slices.Session;
 
-public class Create : AtamaiSlice
+public class Create : IApiSlice
 {
-    public record CreateSession(string Username, string Password) : IValidatable
-    {
-        void IValidatable.Validate(in ValidationContext context)
-        {
-            context.NotNull(Username)
-                ?.Custom(Username, static username => username.Length > 0, "Must be longer than 0 chars");
-
-            context.Custom(Password, static password => !string.IsNullOrWhiteSpace(password));
-        }
-    }
+    public record CreateSession(string Username, string Password);
 
     public override void Register(IEndpointRouteBuilder builder) => builder
         .MapPost("/session", (CreateSession request, DataBase dataBase) =>
         {
-            if (request.Validate() is { } problem)
-                return problem;
-
             if (dataBase.Users.TryGetValue(request.Username, out var hashedPassword) &&
                 PasswordHasher.Compare(hashedPassword, request.Password))
             {
@@ -50,31 +38,28 @@ public class Create : AtamaiSlice
 }
 ```
 
-[Atamai.Slice.Generator](Atamai.Slice.Generator) will find all implementations of `AtamaiSlice` and generate something like the following:
+[Atamai.Slice.Generator](Atamai.Slice.Generator) will find all implementations of `IApiSlice` and generate something like the following:
 ```c#
-public static class GeneratedAtamaiSliceRegistrations 
+public static class GeneratedApiSliceRegistrations 
 { 
     [System.Runtime.CompilerServices.ModuleInitializer]
-    public static void Init() 
+    public static void Init() => Atamai.Slice.Extensions.OnLoad += OnLoad;
+
+    private static void OnLoad(IEndpointRouteBuilder builder)
     {
-        Atamai.Slice.Extensions.Add<Atamai.Slice.Sample.Slices.Root>();
-        Atamai.Slice.Extensions.Add<Atamai.Slice.Sample.Slices.Session.Create>();
-        Atamai.Slice.Extensions.Add<Atamai.Slice.Sample.Slices.Session.Delete>();
+        Atamai.Slice.Sample.Slices.Root.Register(builder);
+        Atamai.Slice.Sample.Slices.Session.Create.Register(builder);
+        Atamai.Slice.Sample.Slices.Session.Delete.Register(builder);
+        Atamai.Slice.Sample.Slices.Session.Get.Register(builder);
+        Atamai.Slice.Extensions.OnLoad -= OnLoad;
     }
 }
 ```
 
-This will register all slices on application startup so it's available for the `builder.AddSlice();` and `app.UseSlice();` 
+`app.UseSlice();` will trigger the `OnLoad` event and register all slices 
 
 Take a look at [Atamai.Slice.Sample](Atamai.Slice.Sample) to see it in action.
 
 ## Notes / Thoughts
 - What if we have slices and a generated registration in an assembly that isn't the main startup assembly?
-  - Adding something like a "dummy" method `App.AddSlice().AddAssemblyFromType<Type>` that just touches the type should work since it will invoke the `ModuleInitializer` on the `GeneratedAtamaiSliceRegistrations` from that assembly.
-
-## Todo
-- [ ] Validate if this idea is something that should exist
-  - [ ] Add tests
-  - [ ] Make it pretty
-  - [ ] Package nuget
-  - [ ] Compare startup performance with MVC and Carter
+  - Adding something like a "dummy" method `App.AddSlice().AddAssemblyFromType<Type>` that just touches the type should work since it will invoke the `ModuleInitializer` on the `GeneratedApiSliceRegistrations` from that assembly.
