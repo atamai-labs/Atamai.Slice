@@ -66,18 +66,21 @@ public class AddModuleInitializer : IIncrementalGenerator
         stringBuilder.AppendLine(@"public static class GeneratedApiSliceRegistrations 
 { 
     [System.Runtime.CompilerServices.ModuleInitializer]
-    public static void Init() 
+    public static void Init() => Atamai.Slice.Extensions.OnLoad += OnLoad;
+
+    private static void OnLoad(IEndpointRouteBuilder builder)
     {");
 
         foreach (var (classDeclaration, identifier, nameSpace) in items)
         {
             if (IsValidForGeneration(context, classDeclaration))
             {
-                stringBuilder.AppendLine($"        Atamai.Slice.Extensions.Add<{nameSpace}.{identifier}>();");
+                stringBuilder.AppendLine($"        {nameSpace}.{identifier}.Register(builder);");
             }
         }
 
-        stringBuilder.AppendLine(@"    }
+        stringBuilder.AppendLine(@"        Atamai.Slice.Extensions.OnLoad -= OnLoad;
+    }
 }");
 
         context.AddSource("GeneratedAtamaiSliceRegistrations.g.cs", stringBuilder.ToString());

@@ -6,22 +6,11 @@ namespace Atamai.Slice;
 
 public static class Extensions
 {
-    private static readonly List<Action<IEndpointRouteBuilder>> Slices = new();
+    public static event Action<IEndpointRouteBuilder>? OnLoad;
 
-    public static void UseSlice(this WebApplication endpointRouteBuilder)
+    public static void UseSlice(this WebApplication builder)
     {
-        endpointRouteBuilder.UseAuthenticationMiddleware();
-
-        foreach (var slice in Slices)
-        {
-            slice(endpointRouteBuilder);
-        }
-
-        Slices.Clear();
-    }
-
-    public static void Add<T>() where T : IApiSlice
-    {
-        Slices.Add(static builder => T.Register(builder));
+        builder.UseAuthenticationMiddleware();
+        OnLoad?.Invoke(builder);
     }
 }
