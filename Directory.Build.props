@@ -7,15 +7,21 @@
         <NoWarn>$(NoWarn);CS1591;NU5105</NoWarn>
         <VersionPrefix>0.0.1</VersionPrefix>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
+    </PropertyGroup>
 
+    <PropertyGroup Condition="$(GeneratePackageOnBuild) == true">
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <Authors>Atamai</Authors>
         <PackageProjectUrl>https://github.com/atamai-labs/Atamai.Slice</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReleaseNotes>https://github.com/atamai-labs/Atamai.Slice/releases/tag/$(Version)</PackageReleaseNotes>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageIcon>icon.png</PackageIcon>
     </PropertyGroup>
-
-    <ItemGroup Condition="$(GeneratePackageOnBuild)">
+    
+    <ItemGroup Condition="$(GeneratePackageOnBuild) == true">
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+        <None Include="../README.md" Pack="true" PackagePath="/" Visible="false" />
+        <None Include="../icon.png" Pack="true" PackagePath="/" Visible="false" />
     </ItemGroup>
 </Project>
