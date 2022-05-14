@@ -7,7 +7,7 @@ public class Create : IApiSlice
     public record CreateSession(string Username, string Password);
 
     public static void Register(IEndpointRouteBuilder builder) => builder
-        .MapPost("/session", (CreateSession request, DataBase dataBase) =>
+        .MapPost("/session", (CreateSession request, Database dataBase) =>
         {
             if (dataBase.Users.TryGetValue(request.Username, out var hashedPassword) &&
                 PasswordHasher.Compare(hashedPassword, request.Password))

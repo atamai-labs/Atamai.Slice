@@ -4,11 +4,11 @@ namespace Atamai.Slice.Sample;
 
 public class Authenticator : IAuthenticator
 {
-    private readonly DataBase _dataBase;
+    private readonly Database _database;
 
-    public Authenticator(DataBase dataBase)
+    public Authenticator(Database database)
     {
-        _dataBase = dataBase;
+        _database = database;
     }
 
     public string Token { get; private set; } = string.Empty;
@@ -16,7 +16,7 @@ public class Authenticator : IAuthenticator
     Task<bool> IAuthenticator.Authenticate(HttpContext httpContext)
     {
         Token = httpContext.Request.Headers.Authorization;
-        var validToken = _dataBase.TokenUser.ContainsKey(Token);
+        var validToken = _database.TokenUser.ContainsKey(Token);
 
         return Task.FromResult(validToken);
     }

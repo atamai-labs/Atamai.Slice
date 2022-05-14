@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => options.AddSlice());
-builder.Services.AddSingleton<DataBase>();
+builder.Services.AddSingleton<Database>();
 builder.Services.AddScoped<Authenticator>();
 builder.Services.AddScoped<IAuthenticator>(s => s.GetRequiredService<Authenticator>());
 
