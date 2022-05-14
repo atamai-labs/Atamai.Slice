@@ -13,7 +13,7 @@ public class Delete : IApiSlice
 
             return Results.Unauthorized();
         })
-        .WithDescription("Delete session",
+        .WithDescription("Delete current session",
             @"A verbose explanation of the operation behavior.\
               [CommonMark](https://spec.commonmark.org/) syntax MAY be used for rich text representation.")
         .Produces(StatusCodes.Status200OK)
