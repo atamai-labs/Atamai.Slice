@@ -14,12 +14,10 @@ public class AddModuleInitializer : IIncrementalGenerator
 {
     private const string InterfaceName = "IApiSlice";
     public record struct Slice(ClassDeclarationSyntax ClassDeclaration, string Identifier, string NameSpace);
-
-#pragma warning disable RS2008
+    
     private static readonly DiagnosticDescriptor ClassModifierWarning = new("ATAMAI001", "Modifier",
         $"Only public, non-static, non-abstract implementations of {InterfaceName} is used by generator", "",
         DiagnosticSeverity.Warning, true);
-#pragma warning restore RS2008
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
