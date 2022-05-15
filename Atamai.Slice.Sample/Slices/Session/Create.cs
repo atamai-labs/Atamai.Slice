@@ -1,5 +1,3 @@
-using Atamai.Slice.Swagger;
-
 namespace Atamai.Slice.Sample.Slices.Session;
 
 public class Create : IApiSlice
@@ -20,10 +18,6 @@ public class Create : IApiSlice
 
             return Results.Unauthorized();
         })
-        .WithDescription("Create Session",
-            @"A verbose explanation of the operation behavior.\
-              [CommonMark](https://spec.commonmark.org/) syntax MAY be used for rich text representation.")
         .Produces<string>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status401Unauthorized)
-        .AllowAnonymous();
+        .Produces(StatusCodes.Status401Unauthorized);
 }

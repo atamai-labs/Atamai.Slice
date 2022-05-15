@@ -1,4 +1,3 @@
-using Atamai.Slice.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
@@ -10,7 +9,6 @@ public static class Extensions
 
     public static void UseSlice(this WebApplication builder)
     {
-        builder.UseAuthenticationMiddleware();
         OnLoad?.Invoke(builder);
     }
 }

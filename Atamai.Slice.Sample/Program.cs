@@ -1,15 +1,11 @@
 using Atamai.Slice;
-using Atamai.Slice.Authentication;
 using Atamai.Slice.Sample;
-using Atamai.Slice.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => options.AddSlice());
+builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<Database>();
-builder.Services.AddScoped<Authenticator>();
-builder.Services.AddScoped<IAuthenticator>(s => s.GetRequiredService<Authenticator>());
 
 var app = builder.Build();
 
