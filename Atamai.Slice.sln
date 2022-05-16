@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{8C5DE50F-3
 		.github\workflows\ci.yml = .github\workflows\ci.yml
 		Atamai.Slice.Sample\Generated\Atamai.Slice.Generator\Atamai.Slice.Generator.AddModuleInitializer\GeneratedAtamaiSliceRegistrations.g.cs = Atamai.Slice.Sample\Generated\Atamai.Slice.Generator\Atamai.Slice.Generator.AddModuleInitializer\GeneratedAtamaiSliceRegistrations.g.cs
 		README.md = README.md
+		Atamai.Slice.Generator\AnalyzerReleases.Shipped.md = Atamai.Slice.Generator\AnalyzerReleases.Shipped.md
+		Atamai.Slice.Generator\AnalyzerReleases.Unshipped.md = Atamai.Slice.Generator\AnalyzerReleases.Unshipped.md
 	EndProjectSection
 EndProject
 Global

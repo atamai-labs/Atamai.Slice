@@ -15,12 +15,12 @@ public class AddModuleInitializer : IIncrementalGenerator
     private const string InterfaceName = "IApiSlice";
     public record struct Slice(ClassDeclarationSyntax ClassDeclaration, string Identifier, string NameSpace);
     
-#pragma warning disable RS2008
-    private static readonly DiagnosticDescriptor ClassModifierWarning = new("ATAMAI001", "Modifier",
-        $"Only public, non-static, non-abstract implementations of {InterfaceName} is used by generator", "",
+    // ReSharper disable once ArrangeObjectCreationWhenTypeEvident
+    // https://github.com/dotnet/roslyn-analyzers/issues/5890
+    private static readonly DiagnosticDescriptor ClassModifierWarning = new DiagnosticDescriptor("SLICE001", "Access", 
+        $"Only public, non-static, non-abstract modifier is allowed on {{0}} when implementing {InterfaceName}", "Modifier", 
         DiagnosticSeverity.Warning, true);
-#pragma warning restore RS2008
-    
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var slices = context.SyntaxProvider
@@ -41,8 +41,8 @@ public class AddModuleInitializer : IIncrementalGenerator
     private static Slice TransformToSliceForGeneration(GeneratorSyntaxContext ctx)
     {
         var declarationSyntax = (ClassDeclarationSyntax)ctx.Node;
-        var nameSpace = GetNamespace(declarationSyntax);
-        return new Slice(declarationSyntax, declarationSyntax.Identifier.ToString(), nameSpace);
+        var ns = GetNamespace(declarationSyntax);
+        return new Slice(declarationSyntax, declarationSyntax.Identifier.ToString(), ns);
     }
 
     private static bool IsSyntaxTargetForGeneration(SyntaxNode s)
@@ -71,11 +71,11 @@ public class AddModuleInitializer : IIncrementalGenerator
     private static void OnLoad(IEndpointRouteBuilder builder)
     {");
 
-        foreach (var (classDeclaration, identifier, nameSpace) in items)
+        foreach (var (classDeclaration, identifier, ns) in items)
         {
-            if (IsValidForGeneration(context, classDeclaration))
+            if (IsValidForGeneration(context, identifier, classDeclaration, ns))
             {
-                stringBuilder.AppendLine($"        {nameSpace}.{identifier}.Register(builder);");
+                stringBuilder.AppendLine($"        {ns}.{identifier}.Register(builder);");
             }
         }
 
@@ -86,7 +86,8 @@ public class AddModuleInitializer : IIncrementalGenerator
         context.AddSource("GeneratedAtamaiSliceRegistrations.g.cs", stringBuilder.ToString());
     }
 
-    private static bool IsValidForGeneration(SourceProductionContext context, ClassDeclarationSyntax classDeclaration)
+    private static bool IsValidForGeneration(SourceProductionContext context, string identifier, 
+        ClassDeclarationSyntax classDeclaration, string ns)
     {
         var modifiers = classDeclaration.Modifiers;
         for (var i = 0; i < modifiers.Count; i++)
@@ -98,7 +99,7 @@ public class AddModuleInitializer : IIncrementalGenerator
                 or SyntaxKind.PrivateKeyword
                 or SyntaxKind.InternalKeyword)
             {
-                var diagnostics = Diagnostic.Create(ClassModifierWarning, classDeclaration.GetLocation());
+                var diagnostics = Diagnostic.Create(ClassModifierWarning, classDeclaration.GetLocation(), $"{ns}.{identifier}");
                 context.ReportDiagnostic(diagnostics);
                 return false;
             }
@@ -111,7 +112,7 @@ public class AddModuleInitializer : IIncrementalGenerator
     {
         // If we don't have a namespace at all we'll return an empty string
         // This accounts for the "default namespace" case
-        var nameSpace = string.Empty;
+        var ns = string.Empty;
 
         // Keep moving "out" of nested classes etc until we get to a namespace
         // or until we run out of parents
@@ -126,7 +127,7 @@ public class AddModuleInitializer : IIncrementalGenerator
         if (potentialNamespaceParent is BaseNamespaceDeclarationSyntax namespaceParent)
         {
             // We have a namespace. Use that as the type
-            nameSpace = namespaceParent.Name.ToString();
+            ns = namespaceParent.Name.ToString();
 
             // Keep moving "out" of the namespace declarations until we
             // run out of nested namespace declarations
@@ -138,12 +139,12 @@ public class AddModuleInitializer : IIncrementalGenerator
                 }
 
                 // Add the outer namespace as a prefix to the final namespace
-                nameSpace = $"{namespaceParent.Name}.{nameSpace}";
+                ns = $"{namespaceParent.Name}.{ns}";
                 namespaceParent = parent;
             }
         }
 
         // return the final namespace
-        return nameSpace;
+        return ns;
     }
 }
