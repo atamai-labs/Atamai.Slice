@@ -2,4 +2,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-SLICE001  | Modifier |  Warning | Access modifier 
+SLICE001  | Access modifier |  Warning | Access modifier 

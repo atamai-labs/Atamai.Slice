@@ -7,7 +7,6 @@ public class Get : IApiSlice
     public static void Register(IEndpointRouteBuilder builder) => builder
         .MapGet("/session", (string token, Database dataBase) =>
         {
-
             if (dataBase.TokenUser.TryGetValue(token, out var user))
                 return Results.Ok(new Session(user, token));
 

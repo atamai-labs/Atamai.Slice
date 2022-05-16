@@ -17,9 +17,10 @@ public class AddModuleInitializer : IIncrementalGenerator
     
     // ReSharper disable once ArrangeObjectCreationWhenTypeEvident
     // https://github.com/dotnet/roslyn-analyzers/issues/5890
-    private static readonly DiagnosticDescriptor ClassModifierWarning = new DiagnosticDescriptor("SLICE001", "Access", 
-        $"Only public, non-static, non-abstract modifier is allowed on {{0}} when implementing {InterfaceName}", "Modifier", 
-        DiagnosticSeverity.Warning, true);
+    private static readonly DiagnosticDescriptor ClassModifierWarning = new DiagnosticDescriptor(
+        "SLICE001", "Access modifier", 
+        $"Only public, non-static, non-abstract modifier is allowed on {{0}} when implementing {InterfaceName}", 
+        "Access modifier", DiagnosticSeverity.Warning, true);
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
