@@ -35,5 +35,5 @@ jobs:
       - name: Publish release to NuGet
         if: github.event_name == 'release'
         run: |
-          dotnet nuget push "**/Atamai.Slice.*SLICE_VERSION.nupkg" -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
-          dotnet nuget push "**/Atamai.Slice.*SLICE_VERSION.snupkg" -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+          dotnet nuget push "**/Atamai.Slice.*$SLICE_VERSION.nupkg" -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
+          dotnet nuget push "**/Atamai.Slice.*$SLICE_VERSION.snupkg" -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
