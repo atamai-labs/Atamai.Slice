@@ -1,4 +1,5 @@
 <Project>
+<!--    https://devblogs.microsoft.com/dotnet/producing-packages-with-source-link/-->
     <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Nullable>enable</Nullable>
@@ -7,9 +8,9 @@
         <NoWarn>$(NoWarn);CS1591;NU5105</NoWarn>
         <VersionPrefix>0.0.1</VersionPrefix>
         <EnablePreviewFeatures>True</EnablePreviewFeatures>
-    </PropertyGroup>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <DebugType>embedded</DebugType>
 
-    <PropertyGroup Condition="$(GeneratePackageOnBuild) == true">
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <Authors>Atamai</Authors>
         <PackageProjectUrl>https://github.com/atamai-labs/Atamai.Slice</PackageProjectUrl>
@@ -18,8 +19,12 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>icon.png</PackageIcon>
     </PropertyGroup>
+
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
     
-    <ItemGroup Condition="$(GeneratePackageOnBuild) == true">
+    <ItemGroup Condition="'$(GeneratePackageOnBuild)' == 'true'">
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
         <None Include="../README.md" Pack="true" PackagePath="/" Visible="false" />
         <None Include="../icon.png" Pack="true" PackagePath="/" Visible="false" />
