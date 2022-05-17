@@ -14,7 +14,7 @@
         <Authors>Atamai</Authors>
         <PackageProjectUrl>https://github.com/atamai-labs/Atamai.Slice</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReleaseNotes>https://github.com/atamai-labs/Atamai.Slice/releases/tag/$(Version)</PackageReleaseNotes>
+        <PackageReleaseNotes>$(ReleaseUrl)</PackageReleaseNotes>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>icon.png</PackageIcon>
     </PropertyGroup>

@@ -23,8 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\Atamai.Slice\Atamai.Slice.csproj" />
     <ProjectReference Include="..\Atamai.Slice.Generator\Atamai.Slice.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
-
 </Project>

@@ -1,5 +1,6 @@
 name: CI
 # https://docs.github.com/en/actions/learn-github-actions/environment-variables
+# https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
 on:
   push:
     branches: [main]
@@ -12,6 +13,7 @@ on:
 env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   SLICE_VERSION: '0.0.1'
+  RELEASE_URL: 'https://github.com/atamai-labs/Atamai.Slice'
 
 jobs:
   build:
@@ -21,12 +23,13 @@ jobs:
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '6.0.x'
-      - name: Set version
+      - name: Set release information
         if: github.event_name == 'release'
-        # https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
-        run: echo "SLICE_VERSION=${GITHUB_REF_NAME/#[vV]/}" >> $GITHUB_ENV
+        run: |
+          echo "SLICE_VERSION=${GITHUB_REF_NAME/#[vV]/}" >> $GITHUB_ENV
+          echo "RELEASE_URL=${{ github.event.release.html_url }}" >> $GITHUB_ENV
       - name: Build
-        run: dotnet build --configuration Release -p:Version=${SLICE_VERSION}
+        run: dotnet build --configuration Release -p:Version=${SLICE_VERSION} -p:ReleaseUrl=${RELEASE_URL}
       # - name: Test
       #   run: dotnet test --no-build --configuration Release
       - name: Publish release to NuGet
