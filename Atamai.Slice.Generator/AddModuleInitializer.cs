@@ -69,7 +69,7 @@ public class AddModuleInitializer : IIncrementalGenerator
     [System.Runtime.CompilerServices.ModuleInitializer]
     public static void Init() => Atamai.Slice.Extensions.OnLoad += OnLoad;
 
-    private static void OnLoad(IEndpointRouteBuilder builder)
+    private static void OnLoad(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder builder)
     {");
 
         foreach (var (classDeclaration, identifier, ns) in items)
